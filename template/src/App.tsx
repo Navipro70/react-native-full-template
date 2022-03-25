@@ -6,7 +6,7 @@ import { initializeMMKVFlipper } from 'react-native-mmkv-flipper-plugin'
 import { enableFreeze } from 'react-native-screens'
 import { ThemeProvider } from 'styled-components/native'
 
-import { StyledSafeAreaProvider } from './components'
+import { StyledSafeAreaProvider, ErrorBoundary } from './components'
 import { SnackbarProvider, StoreProvider, useInitTheme } from './hooks'
 import { AppNavigator } from './navigation'
 import { StorageService } from './services'
@@ -36,17 +36,19 @@ export const App = () => {
   if (__DEV__) initializeMMKVFlipper({ default: StorageService.instance })
 
   return (
-    <StoreProvider>
-      <ThemeProvider theme={theme}>
-        <NavigationContainer theme={navTheme}>
-          <StyledSafeAreaProvider>
-            <SnackbarProvider>
-              <StatusBar {...statusBarProps} />
-              <AppNavigator />
-            </SnackbarProvider>
-          </StyledSafeAreaProvider>
-        </NavigationContainer>
-      </ThemeProvider>
-    </StoreProvider>
+    <ThemeProvider theme={theme}>
+      <StyledSafeAreaProvider>
+        <ErrorBoundary>
+          <StoreProvider>
+            <NavigationContainer theme={navTheme}>
+                <SnackbarProvider>
+                  <StatusBar {...statusBarProps} />
+                  <AppNavigator />
+                </SnackbarProvider>
+            </NavigationContainer>
+          </StoreProvider>
+        </ErrorBoundary>
+      </StyledSafeAreaProvider>
+    </ThemeProvider>
   )
 }
